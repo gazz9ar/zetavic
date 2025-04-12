@@ -4,5 +4,6 @@
     "source.fixAll.eslint": "always",
     "source.fixAll": "always",
   },
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  
 }

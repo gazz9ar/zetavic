@@ -1,6 +1,12 @@
-import {Controller, Get, Param, NotFoundException} from '@nestjs/common';
-import {User} from './user.entity';
-import {UsersService} from './user.service';
+import {
+  Controller,
+  Get,
+  Param,
+  NotFoundException,
+  ParseIntPipe,
+} from '@nestjs/common';
+import { User } from '../types/user.entity';
+import { UsersService } from '../services/user.service';
 
 @Controller('users')
 export class UserController {
@@ -14,7 +20,7 @@ export class UserController {
 
   //get user by id
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<User> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
     const user = await this.userService.findOne(id);
     if (!user) {
       throw new NotFoundException('User does not exist!');
@@ -23,9 +29,9 @@ export class UserController {
     }
   }
 
-  //create user
-  // @Post()
-  // async create(@Body() user: User): Promise<User> {
+  // @Post('create')
+  // @UsePipes(ValidationPipe)
+  // create(@Body() user: UserDTO): User {
   //   return this.userService.create(user);
   // }
 
