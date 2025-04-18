@@ -1,54 +1,61 @@
 import {
   Controller,
   Get,
+  Post,
   Param,
-  NotFoundException,
   ParseIntPipe,
+  ValidationPipe,
+  Body,
+  UsePipes,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+  Put,
+  Delete,
 } from '@nestjs/common';
-import { User } from '../types/user.entity';
+import { SerializedUser, User } from '../types/entities/user.entity';
 import { UsersService } from '../services/user.service';
+import { UserDTO } from '../types/dtos/user.dto';
+import { UpdateUserDTO } from '../types/dtos/updateUser.dto';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UsersService) {}
 
-  //get all users
   @Get()
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
   }
 
-  //get user by id
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
-    const user = await this.userService.findOne(id);
-    if (!user) {
-      throw new NotFoundException('User does not exist!');
-    } else {
-      return user;
-    }
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SerializedUser> {
+    return this.userService.findOne(id);
   }
 
-  // @Post('create')
-  // @UsePipes(ValidationPipe)
-  // create(@Body() user: UserDTO): User {
-  //   return this.userService.create(user);
-  // }
+  @Post('create')
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async create(@Body() user: UserDTO): Promise<SerializedUser> {
+    return this.userService.create(user);
+  }
 
-  // //update user
-  // @Put(':id')
-  // async update(@Param('id') id: number, @Body() user: User): Promise<any> {
-  //   return this.userService.update(id, user);
-  // }
+  @Put(':id')
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async update(
+    @Param('id') id: number,
+    @Body() user: UpdateUserDTO,
+  ): Promise<SerializedUser> {
+    return this.userService.update(id, user);
+  }
 
-  // //delete user
-  // @Delete(':id')
-  // async delete(@Param('id') id: number): Promise<any> {
-  //   //handle error if user does not exist
-  //   const user = await this.userService.findOne(id);
-  //   if (!user) {
-  //     throw new NotFoundException('User does not exist!');
-  //   }
-  //   return this.userService.delete(id);
-  // }
+  @Delete(':id')
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(ClassSerializerInterceptor)
+  async delete(@Param('id') id: number): Promise<any> {
+    return this.userService.delete(id);
+  }
 }
