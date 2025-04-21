@@ -34,12 +34,24 @@ export class User {
   deletedAt?: Date;
 
   @CreateDateColumn()
-  createdat: Date;
+  createdAt: Date;
 }
 
 export class SerializedUser extends User {
   @Exclude()
   password: string;
+
+  @Exclude()
+  deletedAt?: Date;
+
+  @Exclude()
+  createdAt: Date;
+
+  @Exclude()
+  isActive: boolean;
+
+  @Exclude()
+  type: 'superadmin' | 'admin' | 'normal';
 
   constructor(partial: Partial<SerializedUser>) {
     super();
