@@ -1,0 +1,13 @@
+{
+  "folders": [
+	{
+		"path": ".."
+	},
+	{
+		"path": "../../zetavic_frontend"
+	}
+],
+  "settings": {
+    "explorer.autoReveal": false
+  }
+}
