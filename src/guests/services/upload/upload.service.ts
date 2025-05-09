@@ -10,6 +10,16 @@ import { Guest } from 'src/guests/types/guest.entity';
 import { Repository } from 'typeorm';
 import { ImportedGuest } from 'src/guests/types/guest-import.interface';
 
+interface CSVStream extends NodeJS.ReadableStream {
+  on(event: 'headers', listener: (headers: string[]) => void): this;
+  on(event: 'data', listener: (row: ImportedGuest) => void): this;
+  on(event: 'end', listener: () => void): this;
+  on(event: 'error', listener: (err: Error) => void): this;
+  pause(): this;
+  resume(): this;
+  destroy(): void;
+}
+
 @Injectable()
 export class UploadService {
   constructor(
@@ -26,7 +36,9 @@ export class UploadService {
     const filePath = file.path;
 
     return new Promise((resolve, reject) => {
-      const stream = fs.createReadStream(filePath).pipe(csv());
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      const rawStream: unknown = fs.createReadStream(filePath).pipe(csv());
+      const stream = rawStream as CSVStream;
 
       stream.once('headers', (headers: string[]) => {
         const hasAllHeaders = requiredHeaders.every((header) =>
