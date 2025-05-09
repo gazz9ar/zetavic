@@ -10,6 +10,7 @@ import { CompanyModule } from './companies/company.module';
 import { GuestsModule } from './guests/guests.module';
 import { Company } from './companies/types/entities/company.entity';
 import { Guest } from './guests/types/guest.entity';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { Guest } from './guests/types/guest.entity';
       load: [databaseConfig],
       cache: true,
     }),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

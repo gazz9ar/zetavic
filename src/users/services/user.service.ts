@@ -5,6 +5,7 @@ import { SerializedUser, User } from '../types/entities/user.entity';
 import { UserNotFoundException } from '../exceptions/UserNotFound';
 import { UserDTO } from '../types/dtos/user.dto';
 import { UpdateUserDTO } from '../types/dtos/updateUser.dto';
+import { encodePassword } from 'src/utils/bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -23,8 +24,15 @@ export class UsersService {
     else throw new UserNotFoundException();
   }
 
+  async findOneByUsername(username: string): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ username });
+    if (user) return user;
+    else throw new UserNotFoundException();
+  }
+
   async create(userDTO: UserDTO): Promise<SerializedUser> {
-    const newUser = this.usersRepository.create(userDTO);
+    const password = await encodePassword(userDTO.password);
+    const newUser = this.usersRepository.create({ ...userDTO, password });
 
     const existentUser = await this.usersRepository.findOneBy({
       username: newUser.username,
