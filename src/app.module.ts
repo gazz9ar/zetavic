@@ -7,6 +7,9 @@ import { UsersModule } from './users/user.module';
 import { ConfigModule } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import { CompanyModule } from './companies/company.module';
+import { GuestsModule } from './guests/guests.module';
+import { Company } from './companies/types/entities/company.entity';
+import { Guest } from './guests/types/guest.entity';
 
 @Module({
   imports: [
@@ -17,12 +20,13 @@ import { CompanyModule } from './companies/company.module';
       username: 'root',
       password: 'kjasbkjabj1',
       database: 'padel_db',
-      entities: [User],
+      entities: [User, Company, Guest],
       // todo: change to flag:  isDev()
       synchronize: true,
     }),
     UsersModule,
     CompanyModule,
+    GuestsModule,
     ConfigModule.forRoot({
       load: [databaseConfig],
       cache: true,

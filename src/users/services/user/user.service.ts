@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SerializedUser, User } from '../types/entities/user.entity';
-import { UserNotFoundException } from '../exceptions/UserNotFound';
-import { UserDTO } from '../types/dtos/user.dto';
-import { UpdateUserDTO } from '../types/dtos/updateUser.dto';
+import { SerializedUser, User } from '../../types/entities/user.entity';
+import { UserNotFoundException } from '../../exceptions/UserNotFound';
+import { UserDTO } from '../../types/dtos/user.dto';
+import { UpdateUserDTO } from '../../types/dtos/updateUser.dto';
 
 @Injectable()
 export class UsersService {

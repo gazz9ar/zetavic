@@ -12,10 +12,10 @@ import {
   Put,
   Delete,
 } from '@nestjs/common';
-import { SerializedUser, User } from '../types/entities/user.entity';
-import { UsersService } from '../services/user.service';
-import { UserDTO } from '../types/dtos/user.dto';
-import { UpdateUserDTO } from '../types/dtos/updateUser.dto';
+import { SerializedUser, User } from '../../types/entities/user.entity';
+import { UserDTO } from '../../types/dtos/user.dto';
+import { UpdateUserDTO } from '../../types/dtos/updateUser.dto';
+import { UsersService } from '../../services/user/user.service';
 
 @Controller('users')
 export class UserController {
