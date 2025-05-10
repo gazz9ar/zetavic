@@ -11,6 +11,7 @@ import { GuestsModule } from './guests/guests.module';
 import { Company } from './companies/types/entities/company.entity';
 import { Guest } from './guests/types/guest.entity';
 import { AuthModule } from './auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -31,6 +32,9 @@ import { AuthModule } from './auth/auth.module';
     ConfigModule.forRoot({
       load: [databaseConfig],
       cache: true,
+    }),
+    PassportModule.register({
+      session: true,
     }),
     AuthModule,
   ],

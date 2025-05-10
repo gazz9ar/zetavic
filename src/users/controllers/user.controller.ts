@@ -11,16 +11,20 @@ import {
   ClassSerializerInterceptor,
   Put,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { SerializedUser, User } from '../types/entities/user.entity';
 import { UsersService } from '../services/user.service';
 import { UserDTO } from '../types/dtos/user.dto';
 import { UpdateUserDTO } from '../types/dtos/updateUser.dto';
+import { AuthenticatedGuard } from 'src/auth/utils/LocalGuard';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UsersService) {}
 
+  // todo: implement guard by user role
+  @UseGuards(AuthenticatedGuard)
   @Get()
   async findAll(): Promise<User[]> {
     return this.userService.findAll();
