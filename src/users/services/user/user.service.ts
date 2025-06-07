@@ -27,10 +27,10 @@ export class UsersService {
     const newUser = this.usersRepository.create(userDTO);
 
     const existentUser = await this.usersRepository.findOneBy({
-      username: newUser.username,
+      email: newUser.email,
     });
 
-    if (existentUser && existentUser.username === userDTO.username) {
+    if (existentUser && existentUser.email === userDTO.email) {
       throw new HttpException(
         'Username already exists',
         HttpStatus.BAD_REQUEST,

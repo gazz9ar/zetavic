@@ -10,7 +10,7 @@ import { CreateAddressDTO } from './address.dto';
 
 export class UserDTO {
   @IsNotEmpty()
-  username: string;
+  email: string;
 
   @IsNotEmpty()
   password: string;

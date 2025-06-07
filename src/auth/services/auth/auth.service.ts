@@ -9,11 +9,11 @@ export class AuthService {
     @Inject('USER_SERVICE') private readonly userService: UsersService,
   ) {}
 
-  async validateUser(username: string, password: string) {
-    const user = await this.userService.findOneByUsername(username);
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.findOneByEmail(email);
     if (!user) throw new UnauthorizedException();
 
-    const matched = comparePasswords(password, user.password);
+    const matched = comparePasswords(password, user.email);
 
     if (matched) return new SerializedUser(user);
   }

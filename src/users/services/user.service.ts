@@ -24,8 +24,8 @@ export class UsersService {
     else throw new UserNotFoundException();
   }
 
-  async findOneByUsername(username: string): Promise<User> {
-    const user = await this.usersRepository.findOneBy({ username });
+  async findOneByEmail(email: string): Promise<User> {
+    const user = await this.usersRepository.findOneBy({ email });
     if (user) return user;
     else throw new UserNotFoundException();
   }
@@ -35,10 +35,10 @@ export class UsersService {
     const newUser = this.usersRepository.create({ ...userDTO, password });
 
     const existentUser = await this.usersRepository.findOneBy({
-      username: newUser.username,
+      email: newUser.email,
     });
 
-    if (existentUser && existentUser.username === userDTO.username) {
+    if (existentUser && existentUser.email === userDTO.email) {
       throw new HttpException(
         'Username already exists',
         HttpStatus.BAD_REQUEST,
