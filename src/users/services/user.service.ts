@@ -6,12 +6,18 @@ import { UserNotFoundException } from '../exceptions/UserNotFound';
 import { UserDTO } from '../types/dtos/user.dto';
 import { UpdateUserDTO } from '../types/dtos/updateUser.dto';
 import { encodePassword } from 'src/utils/bcrypt';
+import {
+  Company,
+  SerializedCompany,
+} from 'src/companies/types/entities/company.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Company)
+    private companyRepository: Repository<Company>,
   ) {}
 
   findAll(): Promise<SerializedUser[]> {
@@ -24,10 +30,20 @@ export class UsersService {
     else throw new UserNotFoundException();
   }
 
-  async findOneByEmail(email: string): Promise<User> {
+  async findOneByEmail(email: string): Promise<User | Company> {
     const user = await this.usersRepository.findOneBy({ email });
     if (user) return new SerializedUser(user);
-    else throw new UserNotFoundException();
+    throw new UserNotFoundException();
+  }
+
+  async findUserOrCompanyByEmail(email: string): Promise<User | Company> {
+    const user = await this.usersRepository.findOneBy({ email });
+    if (user) return new SerializedUser(user);
+
+    const company = await this.companyRepository.findOneBy({ email });
+    if (company) return new SerializedCompany(company);
+
+    throw new UserNotFoundException();
   }
 
   async create(userDTO: UserDTO): Promise<SerializedUser> {

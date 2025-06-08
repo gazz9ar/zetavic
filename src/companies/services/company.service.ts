@@ -30,10 +30,10 @@ export class CompanyService {
     const newCompany = this.companyRepository.create(companyDTO);
 
     const company = await this.companyRepository.findOneBy({
-      username: newCompany.username,
+      email: newCompany.email,
     });
 
-    if (company && company.username === company.username) {
+    if (company && company.email === company.email) {
       throw new HttpException('Company already exists', HttpStatus.BAD_REQUEST);
     }
 

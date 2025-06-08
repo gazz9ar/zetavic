@@ -13,7 +13,7 @@ export class Company {
   id: number;
 
   @Column()
-  username: string;
+  email: string;
 
   @Column()
   password: string;

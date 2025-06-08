@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/types/entities/user.entity';
 import { LocalStrategy } from './utils/LocalStrategy';
 import { SessionSerializer } from './utils/SessionSerializer';
+import { Company } from 'src/companies/types/entities/company.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, Company])],
   controllers: [AuthController],
   providers: [
     {
