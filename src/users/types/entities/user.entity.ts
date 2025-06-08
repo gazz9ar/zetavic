@@ -4,8 +4,10 @@ import {
   PrimaryGeneratedColumn,
   DeleteDateColumn,
   CreateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Company } from 'src/companies/types/entities/company.entity';
 
 @Entity()
 export class User {
@@ -35,6 +37,9 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @ManyToOne(() => Company, (company) => company.users)
+  company: Company;
 }
 
 export class SerializedUser extends User {

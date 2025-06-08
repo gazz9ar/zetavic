@@ -1,9 +1,11 @@
 import { Exclude } from 'class-transformer';
+import { User } from 'src/users/types/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -29,6 +31,9 @@ export class Company {
 
   @CreateDateColumn()
   createdat: Date;
+
+  @OneToMany(() => User, (user) => user.company)
+  users: User[];
 }
 
 export class SerializedCompany extends Company {
