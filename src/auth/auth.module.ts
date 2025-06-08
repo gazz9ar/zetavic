@@ -4,7 +4,6 @@ import { AuthService } from './services/auth/auth.service';
 import { UsersService } from 'src/users/services/user.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/users/types/entities/user.entity';
-import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './utils/LocalStrategy';
 import { SessionSerializer } from './utils/SessionSerializer';
 
@@ -22,6 +21,8 @@ import { SessionSerializer } from './utils/SessionSerializer';
     },
     LocalStrategy,
     SessionSerializer,
+    UsersService,
+    AuthService,
   ],
 })
 export class AuthModule {}

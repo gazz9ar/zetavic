@@ -26,7 +26,7 @@ export class UsersService {
 
   async findOneByEmail(email: string): Promise<User> {
     const user = await this.usersRepository.findOneBy({ email });
-    if (user) return user;
+    if (user) return new SerializedUser(user);
     else throw new UserNotFoundException();
   }
 

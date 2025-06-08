@@ -1,13 +1,11 @@
-import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/services/user.service';
-import { SerializedUser } from 'src/users/types/entities/user.entity';
+import { SerializedUser, User } from 'src/users/types/entities/user.entity';
 import { comparePasswords } from 'src/utils/bcrypt';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    @Inject('USER_SERVICE') private readonly userService: UsersService,
-  ) {}
+  constructor(private readonly userService: UsersService) {}
 
   async validateUser(email: string, password: string) {
     const user = await this.userService.findOneByEmail(email);
@@ -16,5 +14,12 @@ export class AuthService {
     const matched = comparePasswords(password, user.email);
 
     if (matched) return new SerializedUser(user);
+  }
+
+  async userExists(email: string): Promise<User | undefined> {
+    const foundUser = await this.userService.findOneByEmail(email);
+    if (!foundUser) return undefined;
+
+    return foundUser;
   }
 }
