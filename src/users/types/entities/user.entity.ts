@@ -8,26 +8,33 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Company } from 'src/companies/types/entities/company.entity';
+import { Role } from '../roles.interface';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
+
+  @Column({ nullable: true })
+  avatar?: string;
+
+  @Column({ unique: true, nullable: true })
+  googleId?: string;
+
+  @Column({ default: 'google' })
+  provider: string;
 
   @Column()
   password: string;
 
   @Column({ default: '' })
-  firstName: string;
-
-  @Column({ default: '' })
-  lastName: string;
+  name: string;
 
   @Column({ default: 'normal' })
-  type: 'superadmin' | 'admin' | 'normal';
+  role: Role;
 
   @Column({ default: true })
   isActive: boolean;
@@ -37,6 +44,9 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column({ nullable: true })
+  lastLogin?: Date;
 
   @ManyToOne(() => Company, (company) => company.users)
   company: Company;
@@ -56,7 +66,7 @@ export class SerializedUser extends User {
   isActive: boolean;
 
   @Exclude()
-  type: 'superadmin' | 'admin' | 'normal';
+  role: Role;
 
   constructor(partial: Partial<SerializedUser>) {
     super();

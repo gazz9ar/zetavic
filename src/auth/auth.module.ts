@@ -7,6 +7,9 @@ import { User } from 'src/users/types/entities/user.entity';
 import { LocalStrategy } from './utils/LocalStrategy';
 import { SessionSerializer } from './utils/SessionSerializer';
 import { Company } from 'src/companies/types/entities/company.entity';
+import { JwtStrategy } from './utils/jwt.strategy';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Company])],
@@ -24,6 +27,9 @@ import { Company } from 'src/companies/types/entities/company.entity';
     SessionSerializer,
     UsersService,
     AuthService,
+    JwtStrategy,
+    JwtService,
+    ConfigService,
   ],
 })
 export class AuthModule {}

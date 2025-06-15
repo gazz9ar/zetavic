@@ -8,8 +8,15 @@ import {
   Session,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
+import {
+  GoogleAuthDto,
+  GoogleAuthResponseDto,
+} from 'src/auth/dto/google-auth.dto';
 import { AuthService } from 'src/auth/services/auth/auth.service';
 import { AuthenticatedGuard, LocalAuthGuard } from 'src/auth/utils/LocalGuard';
 import { UserDTO } from 'src/users/types/dtos/user.dto';
@@ -24,9 +31,17 @@ export class AuthController {
   async login() {}
 
   @Post('attempt')
+  @UsePipes(ValidationPipe)
   @UseInterceptors(ClassSerializerInterceptor)
   async attempt(@Body() body: Partial<UserDTO>) {
     return this.authService.userExists(body.email ?? '');
+  }
+
+  @Post('google')
+  async authenticateGoogle(
+    @Body() googleAuthDto: GoogleAuthDto,
+  ): Promise<GoogleAuthResponseDto> {
+    return this.authService.authenticateWithGoogle(googleAuthDto);
   }
 
   @Get('')
@@ -39,5 +54,16 @@ export class AuthController {
   @Get('status')
   getAuthStatus(@Req() req: Request) {
     return new SerializedUser(req.user ?? {});
+  }
+
+  @Post('logout')
+  @UseGuards(AuthGuard('jwt'))
+  logout() {
+    // En JWT stateless, el logout se maneja en el frontend
+    // Aquí podrías implementar una blacklist de tokens si es necesario
+    return {
+      success: true,
+      message: 'Sesión cerrada exitosamente',
+    };
   }
 }
