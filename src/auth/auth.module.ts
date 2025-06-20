@@ -8,27 +8,46 @@ import { LocalStrategy } from './utils/LocalStrategy';
 import { SessionSerializer } from './utils/SessionSerializer';
 import { Company } from 'src/companies/types/entities/company.entity';
 import { JwtStrategy } from './utils/jwt.strategy';
-import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import {
+  appConfig,
+  configValidationSchema,
+  databaseConfig,
+  jwtConfig,
+} from 'src/app.config';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Company])],
+  imports: [
+    TypeOrmModule.forFeature([User, Company]),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [databaseConfig, jwtConfig, appConfig],
+      validationSchema: configValidationSchema,
+      validationOptions: {
+        allowUnknown: true,
+        abortEarly: false,
+      },
+      cache: true,
+      envFilePath: [
+        '.env.development.local',
+        '.env.test.local',
+        '.env.production.local',
+      ], // Archivos de variables de entorno
+      ignoreEnvFile: process.env.NODE_ENV === 'production', // Ignora .env en producción
+    }),
+    PassportModule.register({
+      defaultStrategy: 'jwt',
+      session: true,
+    }),
+  ],
   controllers: [AuthController],
   providers: [
-    {
-      provide: 'AUTH_SERVICE',
-      useClass: AuthService,
-    },
-    {
-      provide: 'USER_SERVICE',
-      useClass: UsersService,
-    },
     LocalStrategy,
     SessionSerializer,
     UsersService,
     AuthService,
     JwtStrategy,
-    JwtService,
     ConfigService,
   ],
 })

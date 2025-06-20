@@ -38,6 +38,7 @@ export class AuthController {
   }
 
   @Post('google')
+  // @UseGuards(AuthGuard('jwt'))
   async authenticateGoogle(
     @Body() googleAuthDto: GoogleAuthDto,
   ): Promise<GoogleAuthResponseDto> {

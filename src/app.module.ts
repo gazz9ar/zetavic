@@ -5,20 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/types/entities/user.entity';
 import { UsersModule } from './users/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import {
-  appConfig,
-  configValidationSchema,
-  databaseConfig,
-  jwtConfig,
-} from './config/database.config';
+
 import { CompanyModule } from './companies/company.module';
 import { GuestsModule } from './guests/guests.module';
 import { Company } from './companies/types/entities/company.entity';
 import { Guest } from './guests/types/guest.entity';
 import { AuthModule } from './auth/auth.module';
-import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { JwtConfig } from './database/database.service';
 
 @Module({
   imports: [
@@ -40,37 +33,23 @@ import { JwtConfig } from './database/database.service';
       inject: [ConfigService],
     }),
     JwtModule.registerAsync({
+      global: true,
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<JwtConfig>('jwt')?.secret,
-        signOptions: {
-          expiresIn: configService.get<JwtConfig>('jwt')?.expiresIn,
-        },
-      }),
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.get<string>('JWT_SECRET');
+        if (!secret) {
+          throw new Error('JWT_SECRET is not defined in environment variables');
+        }
+        return {
+          secret: secret,
+          signOptions: { expiresIn: '24h' }, // o el tiempo que prefieras
+        };
+      },
       inject: [ConfigService],
     }),
     UsersModule,
     CompanyModule,
     GuestsModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [databaseConfig, jwtConfig, appConfig],
-      validationSchema: configValidationSchema,
-      validationOptions: {
-        allowUnknown: true,
-        abortEarly: false,
-      },
-      cache: true,
-      envFilePath: [
-        '.env.development.local',
-        '.env.test.local',
-        '.env.production.local',
-      ], // Archivos de variables de entorno
-      ignoreEnvFile: process.env.NODE_ENV === 'production', // Ignora .env en producción
-    }),
-    PassportModule.register({
-      session: true,
-    }),
     AuthModule,
   ],
   controllers: [AppController],

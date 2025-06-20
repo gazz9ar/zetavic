@@ -27,7 +27,7 @@ export class User {
   @Column({ default: 'google' })
   provider: string;
 
-  @Column()
+  @Column({ default: '' })
   password: string;
 
   @Column({ default: '' })

@@ -82,6 +82,8 @@ export class AuthService {
       // Generar JWT propio
       const accessToken = await this.generateJwtToken(user);
 
+      console.log('ACCESS TOKEN: ', accessToken);
+
       this.logger.log(`Usuario autenticado exitosamente: ${user.email}`);
 
       return {
@@ -107,6 +109,8 @@ export class AuthService {
       name: user.name,
       provider: user.provider,
     };
+
+    this.logger.log('payload', payload);
 
     return this.jwtService.signAsync(payload);
   }
