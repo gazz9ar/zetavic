@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Req,
+  Res,
   Session,
   UseGuards,
   UseInterceptors,
@@ -12,7 +13,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import {
   GoogleAuthDto,
   GoogleAuthResponseDto,
@@ -38,11 +39,11 @@ export class AuthController {
   }
 
   @Post('google')
-  // @UseGuards(AuthGuard('jwt'))
   async authenticateGoogle(
     @Body() googleAuthDto: GoogleAuthDto,
+    @Res({ passthrough: true }) response: Response,
   ): Promise<GoogleAuthResponseDto> {
-    return this.authService.authenticateWithGoogle(googleAuthDto);
+    return this.authService.authenticateWithGoogle(googleAuthDto, response);
   }
 
   @Get('')
@@ -66,5 +67,15 @@ export class AuthController {
       success: true,
       message: 'Sesión cerrada exitosamente',
     };
+  }
+
+  @Get('check')
+  checkAuth(@Req() request: Request): boolean {
+    console.log(request.cookies);
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const accessToken = request?.cookies['access_token'];
+
+    return !!accessToken;
   }
 }

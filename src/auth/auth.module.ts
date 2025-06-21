@@ -16,6 +16,7 @@ import {
   jwtConfig,
 } from 'src/app.config';
 import { PassportModule } from '@nestjs/passport';
+import { CookiesService } from './services/auth/cookies/cookies.service';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { PassportModule } from '@nestjs/passport';
     AuthService,
     JwtStrategy,
     ConfigService,
+    CookiesService,
   ],
 })
 export class AuthModule {}

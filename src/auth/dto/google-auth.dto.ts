@@ -7,11 +7,9 @@ export class GoogleAuthDto {
   token: string;
 
   @IsString()
-  provider: string = 'google';
+  provider: 'google' | 'default' = 'google';
 }
 
 export class GoogleAuthResponseDto {
-  success: boolean;
-  accessToken: string;
   user: User;
 }

@@ -13,6 +13,8 @@ import { SerializedUser, User } from 'src/users/types/entities/user.entity';
 import { GoogleUser } from 'src/users/types/google/google-user.interface';
 import { comparePasswords } from 'src/utils/bcrypt';
 import { Repository } from 'typeorm';
+import { CookiesService } from './cookies/cookies.service';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +27,7 @@ export class AuthService {
     private readonly userService: UsersService,
     private configService: ConfigService,
     private jwtService: JwtService,
+    private readonly cookiesService: CookiesService,
   ) {
     this.googleClient = new OAuth2Client(
       this.configService.get<string>('GOOGLE_CLIENT_ID'),
@@ -67,6 +70,7 @@ export class AuthService {
 
   async authenticateWithGoogle(
     googleAuthDto: GoogleAuthDto,
+    response: Response,
   ): Promise<GoogleAuthResponseDto> {
     try {
       this.logger.log('Iniciando autenticación con Google');
@@ -82,13 +86,11 @@ export class AuthService {
       // Generar JWT propio
       const accessToken = await this.generateJwtToken(user);
 
-      console.log('ACCESS TOKEN: ', accessToken);
-
       this.logger.log(`Usuario autenticado exitosamente: ${user.email}`);
 
+      this.cookiesService.setAuthCookies(response, accessToken);
+
       return {
-        success: true,
-        accessToken,
         user: <User>{
           id: user.id,
           email: user.email,
